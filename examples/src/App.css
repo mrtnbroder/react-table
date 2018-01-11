@@ -1,0 +1,14 @@
+
+body {
+  background-color: #FAFAFA;
+}
+
+.Card {
+  width: calc(12 * 64px);
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.Card--center {
+  margin: 24px auto;
+}

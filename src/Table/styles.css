@@ -1,0 +1,13 @@
+
+.fixed {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+}
+
+.fixedLeft {
+  left: 0;
+}
+.fixedRight {
+  right: 0;
+}

@@ -1,0 +1,95 @@
+{
+  "name": "react-table",
+  "version": "0.1.0",
+  "description": "Google Material Design React Components",
+  "main": "dist/lib/index",
+  "module": "dist/esm/index",
+  "scripts": {
+    "build": "npm run clean && npm run build:cjs & npm run build:esm & npm run build:umd & npm run build:min",
+    "build:cjs": "BABEL_ENV=cjs babel ./src -d dist/lib --ignore '__tests__'",
+    "build:esm": "BABEL_ENV=esm babel ./src -d dist/esm --ignore '__tests__'",
+    "build:min": "NODE_ENV=production webpack -p src/index.js dist/umd/react-table.min.js",
+    "build:umd": "NODE_ENV=development webpack src/index.js dist/umd/react-table.js",
+    "build:watch": "npm run build:esm -- --watch",
+    "build:docs": "documentation serve ./src/index.js -f md",
+    "build:docs:watch": "npm run build:docs -- --watch",
+    "ci-test": "npm run typecheck",
+    "clean": "rm -rf ./dist",
+    "coverage": "nyc report --cache --reporter=text-lcov | coveralls",
+    "examples": "cd examples && npm start",
+    "flow-typed": "flow-typed update",
+    "prepublish": "npm run build",
+    "release": "standard-version",
+    "test": "jest",
+    "typecheck": "flow"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrtnbroder/react-table.git"
+  },
+  "keywords": [
+    "react",
+    "material",
+    "design",
+    "mdl",
+    "google",
+    "light",
+    "dark",
+    "theme",
+    "universal",
+    "isomorphic"
+  ],
+  "engines": {
+    "node": ">6"
+  },
+  "author": "Martin Broder <hello@martinbroder.com> (https://martinbroder.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrtnbroder/react-table/issues"
+  },
+  "homepage": "https://github.com/mrtnbroder/react-table#readme",
+  "dependencies": {
+    "dom-helpers": "^3.3.1",
+    "mobx": "3.4.1",
+    "mobx-react": "4.3.5",
+    "ramda": "^0.25.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "styled-components": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-eslint": "8.1.2",
+    "babel-jest": "22.0.4",
+    "babel-loader": "7.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-flow-comments": "^6.3.19",
+    "babel-plugin-transform-export-extensions": "6.22.0",
+    "babel-plugin-webpack-alias": "^2.1.2",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-react": "6.24.1",
+    "babel-preset-stage-2": "6.24.1",
+    "babel-register": "6.26.0",
+    "coveralls": "^3.0.0",
+    "css-loader": "0.28.8",
+    "documentation": "5.3.5",
+    "flow-bin": "^0.62.0",
+    "flow-typed": "2.2.3",
+    "jest": "^22.0.4",
+    "nyc": "^11.4.1",
+    "postcss-loader": "2.0.10",
+    "style-loader": "0.19.1",
+    "webpack": "^3.10.0"
+  },
+  "files": [
+    "*.md",
+    "dist"
+  ],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "Firefox ESR",
+    "IE 10"
+  ]
+}
