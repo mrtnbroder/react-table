@@ -903,8 +903,8 @@ export default [ { id: '11af39f8-e93f-4053-9173-1fd66653b14b',
 .map((user) => {
   const vm = mobx.observable({
     ...user,
-    changeId: mobx.action(() => {
-      vm.id = Math.random().toString(36)
+    changeDessert: mobx.action(() => {
+      vm.dessert = Math.random().toString(36)
     })
   })
   return vm

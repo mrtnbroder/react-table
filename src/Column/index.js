@@ -8,7 +8,7 @@ export type Alignment = 'left' | 'center' | 'right'
 
 export type ColumnInput = {
   property: string,
-  title?: string,
+  title?: string | React.Element<*>,
   /**
    *  Makes the column take a 'fixed' position to either the left
    *  side or the right. Use this if you need a specific column to
@@ -45,13 +45,9 @@ type Props = {
 
 const Column = observer(({
   column,
-  row,
+  rows,
   children,
-}: Props) => (
-  <td className={`td ${column.align === 'right' ? 'align-right' : ''}`}>
-    {children || row[column.property]}
-  </td>
-))
+}: Props) => children)
 
 
 export default Column

@@ -2,7 +2,7 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
 
-import Column from '../Column'
+import Row from '../Row'
 
 import type { ColumnInput } from '../Column'
 
@@ -137,38 +137,24 @@ const HeaderCell = observer(({ column }) => (
   </th>
 ))
 
-const Row = observer(({ columns, row }) => (
-  <tr>
-    {columns.map((column) => (
-      <Column
-        key={column.property}
-        column={column}
-        row={row}
-        />
-    ))}
-  </tr>
-))
+HeaderCell.displayName = 'HeaderCell'
 
-const FixedTable = observer(({
-  side,
-  columns,
-  rows,
-}) => (
-  <div className={`fixed-table-${side}`}>
-    <table className={`table table-header table-header--${side}`}>
+const FixedTable = observer((props) => (
+  <div className={`fixed-table-${props.side}`}>
+    <table className={`table table-header table-header--${props.side}`}>
       <thead>
         <tr>
-          {columns.map((column) =>
+          {props.columns.map((column) =>
             <HeaderCell key={column.property} column={column}/>
           )}
         </tr>
       </thead>
     </table>
-    <div className={`table-inner table-inner--${side}`}>
-      <table className={`table table-data table-data--${side}`}>
+    <div className={`table-inner table-inner--${props.side}`}>
+      <table className={`table table-data table-data--${props.side}`}>
         <tbody>
-          {rows.map((row) =>
-            <Row key={row.id} columns={columns} row={row}/>
+          {props.rows.map((data) =>
+            <Row key={data.id} columns={props.columns} data={data}/>
           )}
         </tbody>
       </table>
@@ -176,17 +162,16 @@ const FixedTable = observer(({
   </div>
 ))
 
-const Table = ({
-  vm,
-  rows,
-}: Props) => (
+FixedTable.displayName = 'FixedTable'
+
+const Table = (props: Props) => (
   <React.Fragment>
     <style dangerouslySetInnerHTML={{ __html }} />
     <div className='tables-container'>
       <div className='tables'>
-        <FixedTable side='left' columns={vm.columnsLeft} rows={rows}/>
-        <FixedTable side='center' columns={vm.columns} rows={rows}/>
-        <FixedTable side='right' columns={vm.columnsRight} rows={rows}/>
+        <FixedTable side='left' columns={props.vm.columnsLeft} rows={props.rows}/>
+        <FixedTable side='center' columns={props.vm.columns} rows={props.rows}/>
+        <FixedTable side='right' columns={props.vm.columnsRight} rows={props.rows}/>
       </div>
     </div>
   </React.Fragment>

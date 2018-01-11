@@ -1,5 +1,7 @@
 
 export Table from './Table'
+export Column from './Column'
+export TextCell from './TextCell'
 export connect from './Table/connect'
 
-export selectable from './plugins/selectable'
+// export * as selectable from './plugins/selectable'

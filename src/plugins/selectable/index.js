@@ -1,23 +1,28 @@
 
 import * as React from 'react'
+import * as mobx from 'mobx'
 
-import Column from '../../Column'
+import Cell from '../../Cell'
 
-const selectableColumn = ({
+export const mkSelectable = (rows) =>
+  rows.map((row) => mobx.extendObservable(row,  { selected: false }))
+
+export const mkSelectableColumn = ({
+  getSelectedRows,
   onSelect,
   onSelectAll,
+  ...props
 }) => ({
   property: 'selected',
   title: (
     <input onChange={onSelectAll} type='checkbox'/>
   ),
-  render: (row) => {
+  render: (column, row) => {
     return (
-      <Column key='selectableColumn'>
+      <Cell column={column} row={row}>
         <input onChange={onSelect} type='checkbox'/>
-      </Column>
+      </Cell>
     )
-  }
+  },
+  ...props,
 })
-
-export default selectableColumn

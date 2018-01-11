@@ -4,10 +4,10 @@ import * as mobx from 'mobx'
 import rows from './data'
 
 // import {
-//   mkSelectable,
-//   selectableColumn,
-//   editableColumn,
-//   deleteableColumn,
+  // selectable,
+  // selectableColumn,
+  // editableColumn,
+  // deleteableColumn,
 // } from 'react-table'
 
 const mkViewModel = (
@@ -16,10 +16,10 @@ const mkViewModel = (
   context,
 ) => {
   const vm = mobx.observable({
-    rows, //: mkSelectable(rows),
+    rows, //: selectable.mkSelectable(rows),
     columns: [
-      // selectableColumn({
-      //   getSelectedRows: (rowIds) => {}
+      // selectable.mkSelectableColumn({
+      //   getSelectedRows: (rowIds) => {},
       //   onSelect: () => {},
       //   onSelectAll: () => {},
       // }),
@@ -83,7 +83,7 @@ const mkViewModel = (
       // }),
     ],
     changeRow: () => {
-      vm.rows[3].id = Math.random().toString(36)
+      vm.rows[3].changeDessert()
     }
   })
   return vm
