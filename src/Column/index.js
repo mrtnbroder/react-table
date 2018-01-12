@@ -11,7 +11,6 @@ export type Alignment = 'left' | 'center' | 'right'
 
 export type Props = {
   property?: string,
-  title?: string | React.Element<*>,
   /**
    *  Makes the column take a 'fixed' position to either the left
    *  side or the right. Use this if you need a specific column to
@@ -36,7 +35,9 @@ export type Props = {
   // alignment of text within the column.
   // numeric columns should be right aligned.
   align?: Alignment,
-  children: React.ChildrenArray<*>,
+  header: React.Node,
+  cell: React.Node,
+  // children: React.ChildrenArray<*>,
   // row: { [string]: any },
 }
 
@@ -45,6 +46,7 @@ const Column = observer((props: Props) => null)
 Column.defaultProps = {
   header: <HeaderCell/>,
   cell: <TextCell/>,
+  width: 100,
 }
 
 export default Column

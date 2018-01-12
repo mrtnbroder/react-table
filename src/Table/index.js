@@ -185,13 +185,14 @@ tr {
 `
 })
 
-const FixedTable = observer(({ children, side, rows }) => (
+const FixedTable = observer(({ children, side, rows, vm }) => (
   <div className={`fixed-table fixed-table-${side}`}>
     <table className={`table table-header table-header--${side}`}>
       <thead>
         <tr>
           {React.Children.map(children, (column) =>
             React.cloneElement(column.props.header, {
+              map: vm.map,
               first: column.props.first,
               last: column.props.last,
               width: column.props.width,
@@ -207,11 +208,15 @@ const FixedTable = observer(({ children, side, rows }) => (
         <tbody>
           {rows.map((data, idx) =>
             <Row
-              key={data.id}
               data={data}
+              key={data.id}
+              map={vm.map}
+              onMouseEnter={vm.handleRowMouseEnter}
+              onMouseLeave={vm.handleRowMouseLeave}
               >
               {React.Children.map(children, (column) =>
                 React.cloneElement(column.props.cell, {
+                  map: vm.map,
                   first: column.props.first,
                   last: column.props.last,
                   width: column.props.width,
@@ -229,6 +234,10 @@ const FixedTable = observer(({ children, side, rows }) => (
 ))
 
 FixedTable.displayName = 'FixedTable'
+
+FixedTable.defaultProps = {
+  side: 'center',
+}
 
 const Table = ({
   headerCellHeight,
@@ -250,13 +259,25 @@ const Table = ({
       })}/>
       <div className='tables-container'>
         <div className='tables'>
-          <FixedTable side='left' rows={rows}>
+          <FixedTable
+            side='left'
+            rows={rows}
+            vm={vm}
+            >
             {vm.columns.left}
           </FixedTable>
-          <FixedTable side='center' rows={rows}>
+          <FixedTable
+            rows={rows}
+            map={vm.map}
+            vm={vm}
+            >
             {vm.columns.center}
           </FixedTable>
-          <FixedTable side='right' rows={rows}>
+          <FixedTable
+            side='right'
+            rows={rows}
+            vm={vm}
+            >
             {vm.columns.right}
           </FixedTable>
         </div>
@@ -266,6 +287,15 @@ const Table = ({
       </div>
     </React.Fragment>
   )
+}
+
+Table.displayName = 'Table'
+
+Table.defaultProps = {
+  headerCellHeight: 56,
+  rowCount: 7,
+  rowHeight: 48,
+  rows: [],
 }
 
 export default connect(mkViewModel, Table)

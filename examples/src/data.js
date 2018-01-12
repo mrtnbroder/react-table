@@ -2,19 +2,6 @@ import * as mobx from 'mobx'
 
 export const mkObservable = (data) => {
   const vm = mobx.observable({
-    // ROW HOVER
-    // TODO: add a function to extend a row with this hover property and mouse methods
-    hover: false,
-    onMouseEnter: mobx.action(() => {
-      if (!vm.hover) {
-        vm.hover = true
-      }
-    }),
-    onMouseLeave: mobx.action(() => {
-      if (vm.hover) {
-        vm.hover = false
-      }
-    }),
     // SELECTABLE stuff
     onRowClick: mobx.action(() => {
       vm.selected = !vm.selected

@@ -20,6 +20,7 @@ const mkViewModel = (
 ) => {
   const elems = {}
   const vm = mobx.observable({
+    map: mobx.observable.map(),
     // columnsLeft: mobx.computed(() =>
     //   R.filter(isFixedLeftColumn, props.columns)
     // ),
@@ -29,6 +30,8 @@ const mkViewModel = (
     // columns: mobx.computed(() =>
     //   R.reject(isNotFixed, props.columns)
     // ),
+    handleRowMouseEnter: mobx.action((id) => vm.map.set(id, true)),
+    handleRowMouseLeave: mobx.action((id) => vm.map.delete(id)),
     columnsWidth: mobx.computed(() => vm.columns.center.reduce((acc, column) => acc + column.props.width, 0)),
     fixedColumnsCount: mobx.computed(() => vm.columns.left.length + vm.columns.right.length),
     columnsCount: mobx.computed(() => vm.columns.center.length + vm.fixedColumnsCount),
