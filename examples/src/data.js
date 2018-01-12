@@ -2,9 +2,9 @@ import * as mobx from 'mobx'
 
 export const mkObservable = (data) => {
   const vm = mobx.observable({
-    ...data,
+    // ROW HOVER
+    // TODO: add a function to extend a row with this hover property and mouse methods
     hover: false,
-    selected: false,
     onMouseEnter: mobx.action(() => {
       if (!vm.hover) {
         vm.hover = true
@@ -15,9 +15,21 @@ export const mkObservable = (data) => {
         vm.hover = false
       }
     }),
+    // SELECTABLE stuff
+    onRowClick: mobx.action(() => {
+      vm.selected = !vm.selected
+    }),
+    selected: false,
+    // EDITABLE stuff
+    editing: false,
+    onChange: mobx.action((property, value) => {
+      vm[property] = value
+    }),
+    // TEST STUFF
     changeDessert: mobx.action(() => {
       vm.dessert = Math.random().toString(36)
-    })
+    }),
+    ...data,
   })
   return vm
 }

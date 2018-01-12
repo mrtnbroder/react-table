@@ -14,6 +14,9 @@ import {
   SelectCell,
   // DELETEABLE
   DeleteCell,
+  // EDITABLE
+  EditCell,
+  InputCell,
   // CORE
   Column,
   Table,
@@ -66,6 +69,11 @@ const App = ({ vm }) => (
               >
               Dessert (100g serving)
             </SortHeaderCell>
+          }
+          cell={
+            <InputCell
+              placeholder='Enter a dessert'
+              />
           }
           />
         <Column
@@ -165,6 +173,16 @@ const App = ({ vm }) => (
           cell={
             <DeleteCell
               onDelete={vm.onDelete}
+              pending={vm.pending}
+              />
+          }
+          />
+        <Column
+          fixed='right'
+          width={24}
+          cell={
+            <EditCell
+              onToggleEdit={vm.onToggleEdit}
               pending={vm.pending}
               />
           }

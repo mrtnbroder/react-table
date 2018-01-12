@@ -3,7 +3,7 @@ const Chance = require('chance')
 
 const chance = new Chance()
 
-const mkEntry = () => ({
+const mkEntry = (data) => ({
   id: faker.random.uuid(),
   dessert: faker.commerce.productName(),
   calories: chance.integer({ min: 0, max: 999 }),
@@ -13,6 +13,7 @@ const mkEntry = () => ({
   sodium: chance.integer({ min: 0, max: 999 }),
   calcium: `${chance.integer({ min: 0, max: 100 })}%`,
   iron: `${chance.integer({ min: 0, max: 100 })}%`,
+  ...data,
 })
 
 module.exports = mkEntry

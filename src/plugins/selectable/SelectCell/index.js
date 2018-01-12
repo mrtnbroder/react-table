@@ -17,7 +17,7 @@ type Props = {
 
 class SelectCell extends React.Component<Props> {
 
-  onSelect = (e) => {
+  handleSelect = (e) => {
     e.stopPropagation()
     this.props.onSelect(this.props.data.id)
   }
@@ -46,7 +46,7 @@ class SelectCell extends React.Component<Props> {
         <input
           checked={data.selected}
           disabled={pending}
-          onChange={this.onSelect}
+          onClick={this.handleSelect}
           type='checkbox'
           />
       </td>

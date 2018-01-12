@@ -9,7 +9,7 @@ type Props = {
   data: { id: string, [string]: any },
   first: boolean,
   last: boolean,
-  onSelect: (string) => void,
+  onToggleEdit: (string) => void,
   pending: boolean,
   property: string,
   width: number,
@@ -17,16 +17,17 @@ type Props = {
 
 class EditCell extends React.Component<Props> {
 
-  onSelect = (e) => {
+  onToggleEdit = (e) => {
+    e.preventDefault()
     e.stopPropagation()
-    this.props.onSelect(this.props.data.id)
+    this.props.onToggleEdit(this.props.data.id)
   }
 
   render() {
     const {
       align,
       children,
-      onSelect,
+      onToggleEdit,
       pending,
       width,
       first,
@@ -43,12 +44,9 @@ class EditCell extends React.Component<Props> {
         })}
         width={width}
         >
-        <input
-          checked={data.selected}
-          disabled={pending}
-          onChange={this.onSelect}
-          type='checkbox'
-          />
+        <button onClick={this.onToggleEdit}>
+          {this.props.data.editing ? 'Save' : 'Edit'}
+        </button>
       </td>
     )
   }

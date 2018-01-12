@@ -16,6 +16,11 @@ const mkViewModel = (
     // SHARED AMONGST PLUGINS
     pending: false,
     totalCount: mobx.computed(() => vm.rows.length),
+    // EDITABLE
+    onToggleEdit: mobx.action((id) => {
+      const row = vm.rows.find((x) => x.id === id)
+      row.editing = !row.editing
+    }),
     // DELETEABLE
     onDelete: mobx.action((id) => {
       // this may seem slow, but is actually faster to render since we only
@@ -82,7 +87,7 @@ const mkViewModel = (
       vm.rows[3].changeDessert()
     },
     addRow: () => {
-      vm.rows.unshift(mkObservable(mkEntry()))
+      vm.rows.unshift(mkObservable({ ...mkEntry(), editing: true, dessert: '' }))
     },
   })
   return vm

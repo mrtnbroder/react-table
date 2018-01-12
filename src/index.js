@@ -14,4 +14,5 @@ export SelectCell from './plugins/selectable/SelectCell'
 export DeleteCell from './plugins/deletable/DeleteCell'
 // EDITABLE
 export EditCell from './plugins/editable/EditCell'
+export InputCell from './plugins/editable/InputCell'
 // export * as selectable from './plugins/selectable'

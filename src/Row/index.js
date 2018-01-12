@@ -25,9 +25,19 @@ class Row extends React.Component<Props> {
     // this.props.onMouseLeave(this.props.data.id)
   }
 
+  // SELECTABLE AND EDITABLE stuff
+  onClick = (e) => {
+    if (!this.props.data.editing) {
+      e.stopPropagation()
+      e.preventDefault()
+      this.props.data.onRowClick()
+    }
+  }
+
   render() {
     return (
       <tr
+        onClick={this.onClick}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
         className={cx({

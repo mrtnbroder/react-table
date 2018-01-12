@@ -80,7 +80,8 @@ const getStyles = ({
 
 .table-inner,
 .table-data {
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   height: ${rowCount * rowHeight}px;
 }
 
@@ -104,6 +105,7 @@ const getStyles = ({
 .table-inner--center,
 .table-header--center {
   width: ${columnsWidth}px;
+  max-width: ${columnsWidth}px;
 }
 
 th, td {
@@ -123,14 +125,6 @@ td {
   padding-right: 24px;
 }
 
-.row--selected {
-  background: #F5F5F5;
-}
-
-.row--hover {
-  background: #eee;
-}
-
 th {
   height: ${headerCellHeight}px;
   font-weight: 500;
@@ -148,8 +142,17 @@ th {
 }
 
 tr {
-  background: #fff;
+  background-color: #fff;
   box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.12);
+  transition: background-color 150ms cubic-bezier(0.4, 0.0, 0.6, 1);;
+}
+
+.row--selected {
+  background-color: #F5F5F5;
+}
+
+.row--hover {
+  background-color: #eee;
 }
 
 .align-right {
