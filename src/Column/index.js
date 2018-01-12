@@ -1,13 +1,16 @@
 // @flow
 import * as React from 'react'
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react'
+
+import HeaderCell from '../HeaderCell'
+import TextCell from '../TextCell'
 
 export type Fixed = 'left' | 'right'
 export type Order = 'asc' | 'desc' | 'inital'
 export type Alignment = 'left' | 'center' | 'right'
 
-export type ColumnInput = {
-  property: string,
+export type Props = {
+  property?: string,
   title?: string | React.Element<*>,
   /**
    *  Makes the column take a 'fixed' position to either the left
@@ -30,24 +33,18 @@ export type ColumnInput = {
   // 0 = first
   // X = last
   position?: number,
-  // ascending or descending order of the column.
-  order?: Order,
   // alignment of text within the column.
   // numeric columns should be right aligned.
-  align: Alignment,
-}
-
-type Props = {
-  column: ColumnInput,
-  row: { [string]: any },
+  align?: Alignment,
   children: React.ChildrenArray<*>,
+  // row: { [string]: any },
 }
 
-const Column = observer(({
-  column,
-  rows,
-  children,
-}: Props) => children)
+const Column = observer((props: Props) => null)
 
+Column.defaultProps = {
+  header: <HeaderCell/>,
+  cell: <TextCell/>,
+}
 
 export default Column

@@ -1,6 +1,7 @@
 
+import * as React from 'react'
 import * as mobx from 'mobx'
-import * as R from 'ramda'
+// import * as R from 'ramda'
 
 export type ViewModel = {
   columnsLeft: Array<*>,
@@ -8,9 +9,9 @@ export type ViewModel = {
   columns: Array<*>,
 }
 
-const isFixedLeftColumn = R.propEq('fixed', 'left')
-const isFixedRightColumn = R.propEq('fixed', 'right')
-const isNotFixed = R.anyPass([isFixedLeftColumn, isFixedRightColumn])
+// const isFixedLeftColumn = R.propEq('fixed', 'left')
+// const isFixedRightColumn = R.propEq('fixed', 'right')
+// const isNotFixed = R.anyPass([isFixedLeftColumn, isFixedRightColumn])
 
 const mkViewModel = (
   params,
@@ -19,15 +20,45 @@ const mkViewModel = (
 ) => {
   const elems = {}
   const vm = mobx.observable({
-    columnsLeft: mobx.computed(() =>
-      R.filter(isFixedLeftColumn, props.columns)
-    ),
-    columnsRight: mobx.computed(() =>
-      R.filter(isFixedRightColumn, props.columns)
-    ),
-    columns: mobx.computed(() =>
-      R.reject(isNotFixed, props.columns)
-    ),
+    // columnsLeft: mobx.computed(() =>
+    //   R.filter(isFixedLeftColumn, props.columns)
+    // ),
+    // columnsRight: mobx.computed(() =>
+    //   R.filter(isFixedRightColumn, props.columns)
+    // ),
+    // columns: mobx.computed(() =>
+    //   R.reject(isNotFixed, props.columns)
+    // ),
+    columnsWidth: mobx.computed(() => vm.columns.center.reduce((acc, column) => acc + column.props.width, 0)),
+    fixedColumnsCount: mobx.computed(() => vm.columns.left.length + vm.columns.right.length),
+    columnsCount: mobx.computed(() => vm.columns.center.length + vm.fixedColumnsCount),
+    columns: mobx.computed(() => {
+      // make sure we convert children to array so we can map over it
+      const children = React.Children.toArray(props.children)
+      // split fixed columns
+      return children.reduce((acc, column, idx) => {
+        let col = column
+        if (idx === 0) {
+          // give the first column an identification
+          col = React.cloneElement(column, { first: true })
+        } else if (idx === children.length - 1) {
+          // give the last column an identification
+          col = React.cloneElement(column, { last: true })
+        }
+
+        if (col.props.fixed === 'left') {
+          acc.left.push(col)
+        }
+        else if (col.props.fixed === 'right') {
+          acc.right.push(col)
+        }
+        else {
+          acc.center.push(col)
+        }
+
+        return acc
+      }, { left: [], center: [], right: [] })
+    }),
     componentDidMount() {
       elems.tableLeft = document.querySelector('.table-inner--left')
       elems.tableLeftContainer = document.querySelector('.fixed-table-left')

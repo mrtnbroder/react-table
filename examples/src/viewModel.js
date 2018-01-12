@@ -1,14 +1,9 @@
 // @flow
 // import * as React from 'react'
 import * as mobx from 'mobx'
-import rows from './data'
-
-// import {
-  // selectable,
-  // selectableColumn,
-  // editableColumn,
-  // deleteableColumn,
-// } from 'react-table'
+import * as R from 'ramda'
+import rows, { mkObservable } from './data'
+import mkEntry from './generate-rows'
 
 const mkViewModel = (
   params,
@@ -16,75 +11,79 @@ const mkViewModel = (
   context,
 ) => {
   const vm = mobx.observable({
-    rows, //: selectable.mkSelectable(rows),
-    columns: [
-      // selectable.mkSelectableColumn({
-      //   getSelectedRows: (rowIds) => {},
-      //   onSelect: () => {},
-      //   onSelectAll: () => {},
-      // }),
-      {
-        property: 'dessert',
-        title: 'Dessert (100g serving)',
-        fixed: 'left',
-      },
-      {
-        property: 'calories',
-        title: 'Calories',
-        align: 'right',
-      },
-      {
-        property: 'fat',
-        title: 'Fat (g)',
-        align: 'right',
-      },
-      {
-        property: 'carbs',
-        title: 'Carbs (g)',
-        align: 'right',
-      },
-      {
-        property: 'protein',
-        title: 'Protein (g)',
-        align: 'right',
-      },
-      {
-        property: 'sodium',
-        title: 'Sodium (mg)',
-        align: 'right',
-      },
-      {
-        property: 'calcium',
-        title: 'Calcium (%)',
-        align: 'right',
-      },
-      {
-        property: 'iron',
-        title: 'Iron (%)',
-        fixed: 'right',
-        align: 'right',
-      },
-      // editableColumn({
-      //   columns: [
-      //     {
-      //       property: 'firstName',
-      //       validate: (value: string) => boolean,
-      //       input: (column: Column, row: Row, onChange: EventHandler): ReactNode =>
-      //         <input type='text' onChange={onChange}/>,
-      //     },
-      //   ],
-      //   onEdit: (rowId) => {},
-      //   onCancel: (rowId) => {},
-      //   onChange: (rowId, value) => {},
-      //   onDelete: (rowId) => {},
-      // }),
-      // deletableColumn({
-      //   onDeleteRequest: (rowId) => {},
-      // }),
-    ],
-    changeRow: () => {
+    rows,
+    fixed: 'left',
+    // SHARED AMONGST PLUGINS
+    pending: false,
+    totalCount: mobx.computed(() => vm.rows.length),
+    // DELETEABLE
+    onDelete: mobx.action((id) => {
+      // this may seem slow, but is actually faster to render since we only
+      // re-render one item in the list (actually removing it). If we'd map
+      // over each row and assign a index to it dynamically, react would
+      // re-render every item in the list, even though nothing changed.
+      const row = vm.rows.find((x) => x.id === id)
+      vm.rows.remove(row)
+    }),
+    // SELECTABLE
+    someSelected: mobx.computed(() =>
+      vm.rows.some((x) => x.selected)
+    ),
+    allSelected: mobx.computed(() =>
+      vm.rows.every((x) => x.selected)
+    ),
+    onSelectAll: mobx.action(() => {
+      const selected = !vm.allSelected
+      vm.rows.forEach((row) => {
+        row.selected = selected
+      })
+    }),
+    onSelect: mobx.action((id) => {
+      const row = vm.rows.find((x) => x.id === id)
+      row.selected = !row.selected
+    }),
+    // SORTABLE
+    sortOrder: {
+      columnKey: 'calories',
+      order: 'desc',
+    },
+    // TODO: call sort on inital mount, otherwise it would show the arrow, even
+    // though nothing is sorted actually
+    onSortChange: mobx.action((property) => {
+      if (vm.sortOrder.columnKey === property) {
+        if (vm.sortOrder.order === null) {
+          vm.sortOrder.order = 'desc'
+          vm.rows = R.sortBy(R.prop(property), vm.rows)
+        } else if (vm.sortOrder.order === 'desc') {
+          vm.sortOrder.order = 'asc'
+          vm.rows = R.reverse(R.sortBy(R.prop(property), vm.rows))
+        } else if (vm.sortOrder.order === 'asc') {
+          vm.sortOrder.order = null
+          vm.rows = rows
+        }
+      } else {
+        vm.sortOrder.order = null
+        vm.sortOrder.columnKey = property
+        vm.onSortChange(property)
+      }
+    }),
+    toggleFixed: mobx.action(() => {
+      if (vm.fixed === null) {
+        vm.fixed = 'left'
+      }
+      else if (vm.fixed === 'left') {
+        vm.fixed = 'right'
+      }
+      else if (vm.fixed === 'right') {
+        vm.fixed = null
+      }
+    }),
+    changeDessert: () => {
       vm.rows[3].changeDessert()
-    }
+    },
+    addRow: () => {
+      vm.rows.unshift(mkObservable(mkEntry()))
+    },
   })
   return vm
 }

@@ -1,34 +1,45 @@
 // @flow
-import * as React from 'react'
 import { observer } from 'mobx-react'
+import * as React from 'react'
+import cx from 'classnames'
 
 import Row from '../Row'
-
-import type { ColumnInput } from '../Column'
+import TextCell from '../TextCell'
+import SortHeaderCell from '../plugins/sortable/SortHeaderCell'
 
 import mkViewModel from './viewModel'
 import connect from './connect'
 
 import type { ViewModel } from './viewModel'
 
-const columnsCount = 8
-const fixedColumnsCount = 2
-const columnsWidth = 200
-const rowsCount = 7
-const rowHeight = 48
-const headerCellHeight = 56
-
 type Props = {
-  columns: Array<ColumnInput>,
   rows: Array<{ [string]: any }>,
   vm: ViewModel,
+  children: React.ChildrenArray<*>,
+  headerCellHeight: number,
+  pending: boolean,
+  rowCount: number,
+  totalCount: number,
+  rowHeight: number,
 }
 
-const __html = `
+const getStyles = ({
+  columnsCount,
+  fixedColumnsCount,
+  columnsWidth,
+  rowCount,
+  rowHeight,
+  headerCellHeight,
+}) => ({
+  __html: `
 .tables-container {
   position: relative;
-  height: ${rowsCount * rowHeight + headerCellHeight}px;
+  height: ${rowCount * rowHeight + headerCellHeight}px;
   overflow: hidden;
+}
+
+.tables {
+  display: flex;
 }
 
 .fixed-table-center {
@@ -39,36 +50,38 @@ const __html = `
 
 .fixed-table-left {
   flex: 1 0 auto;
-  height: ${rowsCount * rowHeight + headerCellHeight}px;
+  height: ${rowCount * rowHeight + headerCellHeight}px;
   overflow: hidden;
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0.0, 0.0, 0.2, 1);
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15)
 }
 
 .fixed-table-left--box-shadow {
   transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 1, 1);
-  box-shadow: 6px 0 6px -4px rgba(0, 0, 0, 0.15)
+  box-shadow: 4px 0 6px 0 rgba(0, 0, 0, 0.15)
 }
 
 .fixed-table-right {
   flex: 1 0 auto;
-  height: ${rowsCount * rowHeight + headerCellHeight}px;
+  height: ${rowCount * rowHeight + headerCellHeight}px;
   overflow: hidden;
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0.0, 0.0, 0.2, 1);
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15)
 }
 
 .fixed-table-right--box-shadow {
   transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 1, 1);
-  box-shadow: -6px 0 6px -4px rgba(0, 0, 0, 0.15);
+  box-shadow: -4px 0 6px 0 rgba(0, 0, 0, 0.15);
 }
 
 .table-inner,
 .table-data {
   overflow: auto;
-  height: ${rowsCount * rowHeight}px;
+  height: ${rowCount * rowHeight}px;
 }
 
 .table {
@@ -90,31 +103,48 @@ const __html = `
 
 .table-inner--center,
 .table-header--center {
-  width: ${(columnsCount - fixedColumnsCount) * columnsWidth}px;
+  width: ${columnsWidth}px;
 }
 
 th, td {
   border: 0;
   margin: 0;
   padding: 0;
+  min-width: 48px;
 }
 
 td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: ${columnsWidth}px;
   height: ${rowHeight}px;
   color: rgba(0, 0, 0, 0.87);
   font-size: 13px;
+  padding-right: 24px;
+}
+
+.row--selected {
+  background: #F5F5F5;
+}
+
+.row--hover {
+  background: #eee;
 }
 
 th {
-  width: ${columnsWidth}px;
   height: ${headerCellHeight}px;
   font-weight: 500;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
+  padding-right: 24px;
+}
+
+.sort-header-cell {
+  cursor: pointer;
+}
+
+.sort-header-cell--active {
+  color: rgba(0, 0, 0, 0.87);
 }
 
 tr {
@@ -122,39 +152,72 @@ tr {
   box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.12);
 }
 
-.tables {
-  display: flex;
-}
-
 .align-right {
   text-align: right;
+  padding-right: 56px;
+}
+
+.first {
+  padding-left: 24px;
+}
+
+.last {
+  padding-right: 24px;
+}
+
+.table-footer {
+  overflow: hidden;
+  height: ${headerCellHeight}px;
+  padding: 0 24px;
+  color: rgba(0, 0, 0, 0.87);
+  text-align: center;
+}
+
+.table-footer span {
+  vertical-align: middle;
+  font-size: 13px;
+  line-height: 56px;
+  display: block;
 }
 `
+})
 
-const HeaderCell = observer(({ column }) => (
-  <th className={column.align === 'right' ? 'align-right' : ''}>
-    {column.title}
-  </th>
-))
-
-HeaderCell.displayName = 'HeaderCell'
-
-const FixedTable = observer((props) => (
-  <div className={`fixed-table-${props.side}`}>
-    <table className={`table table-header table-header--${props.side}`}>
+const FixedTable = observer(({ children, side, rows }) => (
+  <div className={`fixed-table fixed-table-${side}`}>
+    <table className={`table table-header table-header--${side}`}>
       <thead>
         <tr>
-          {props.columns.map((column) =>
-            <HeaderCell key={column.property} column={column}/>
+          {React.Children.map(children, (column) =>
+            React.cloneElement(column.props.header, {
+              first: column.props.first,
+              last: column.props.last,
+              width: column.props.width,
+              property: column.props.property,
+              align: column.props.align,
+            })
           )}
         </tr>
       </thead>
     </table>
-    <div className={`table-inner table-inner--${props.side}`}>
-      <table className={`table table-data table-data--${props.side}`}>
+    <div className={`table-inner table-inner--${side}`}>
+      <table className={`table table-data table-data--${side}`}>
         <tbody>
-          {props.rows.map((data) =>
-            <Row key={data.id} columns={props.columns} data={data}/>
+          {rows.map((data, idx) =>
+            <Row
+              key={data.id}
+              data={data}
+              >
+              {React.Children.map(children, (column) =>
+                React.cloneElement(column.props.cell, {
+                  first: column.props.first,
+                  last: column.props.last,
+                  width: column.props.width,
+                  property: column.props.property,
+                  align: column.props.align,
+                  data,
+                })
+              )}
+            </Row>
           )}
         </tbody>
       </table>
@@ -164,17 +227,42 @@ const FixedTable = observer((props) => (
 
 FixedTable.displayName = 'FixedTable'
 
-const Table = (props: Props) => (
-  <React.Fragment>
-    <style dangerouslySetInnerHTML={{ __html }} />
-    <div className='tables-container'>
-      <div className='tables'>
-        <FixedTable side='left' columns={props.vm.columnsLeft} rows={props.rows}/>
-        <FixedTable side='center' columns={props.vm.columns} rows={props.rows}/>
-        <FixedTable side='right' columns={props.vm.columnsRight} rows={props.rows}/>
+const Table = ({
+  headerCellHeight,
+  rowCount,
+  rowHeight,
+  totalCount,
+  rows,
+  vm,
+}: Props) => {
+  return (
+    <React.Fragment>
+      <style dangerouslySetInnerHTML={getStyles({
+        rowHeight,
+        rowCount,
+        headerCellHeight,
+        columnsWidth: vm.columnsWidth,
+        columnsCount: vm.columnsCount,
+        fixedColumnsCount: vm.fixedColumnsCount,
+      })}/>
+      <div className='tables-container'>
+        <div className='tables'>
+          <FixedTable side='left' rows={rows}>
+            {vm.columns.left}
+          </FixedTable>
+          <FixedTable side='center' rows={rows}>
+            {vm.columns.center}
+          </FixedTable>
+          <FixedTable side='right' rows={rows}>
+            {vm.columns.right}
+          </FixedTable>
+        </div>
       </div>
-    </div>
-  </React.Fragment>
-)
+      <div className='table-footer'>
+        <span>Showing 1 - 10 of {totalCount}</span>
+      </div>
+    </React.Fragment>
+  )
+}
 
 export default connect(mkViewModel, Table)

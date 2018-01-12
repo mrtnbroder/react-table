@@ -6,23 +6,16 @@ import cx from 'classnames'
 type Props = {
   align: string,
   children: React.ChildrenArray<*>,
-  data: { [string]: any },
-  first: boolean,
-  last: boolean,
-  property: string,
-  width: number,
 }
 
-const TextCell = ({
+const HeaderCell = ({
   align,
-  property,
-  data,
+  width,
   first,
   last,
-  width,
   children,
 }: Props) => (
-  <td
+  <th
     className={cx({
       'align-right': align === 'right',
       first,
@@ -30,10 +23,10 @@ const TextCell = ({
     })}
     width={width}
     >
-    {children || data[property]}
-  </td>
+    {children}
+  </th>
 )
 
-TextCell.displayName = 'TextCell'
+HeaderCell.displayName = 'HeaderCell'
 
-export default observer(TextCell)
+export default observer(HeaderCell)

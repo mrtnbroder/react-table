@@ -1,5 +1,27 @@
 import * as mobx from 'mobx'
 
+export const mkObservable = (data) => {
+  const vm = mobx.observable({
+    ...data,
+    hover: false,
+    selected: false,
+    onMouseEnter: mobx.action(() => {
+      if (!vm.hover) {
+        vm.hover = true
+      }
+    }),
+    onMouseLeave: mobx.action(() => {
+      if (vm.hover) {
+        vm.hover = false
+      }
+    }),
+    changeDessert: mobx.action(() => {
+      vm.dessert = Math.random().toString(36)
+    })
+  })
+  return vm
+}
+
 export default [ { id: '11af39f8-e93f-4053-9173-1fd66653b14b',
     dessert: 'Sleek Wooden Car',
     calories: 63,
@@ -900,12 +922,4 @@ export default [ { id: '11af39f8-e93f-4053-9173-1fd66653b14b',
     sodium: 406,
     calcium: '33%',
     iron: '70%' } ]
-.map((user) => {
-  const vm = mobx.observable({
-    ...user,
-    changeDessert: mobx.action(() => {
-      vm.dessert = Math.random().toString(36)
-    })
-  })
-  return vm
-})
+.map(mkObservable)
