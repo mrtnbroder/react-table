@@ -3,17 +3,13 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
-type Props = {
-  align: string,
-  children: React.ChildrenArray<*>,
-  data: { id: string, [string]: any },
-  first: boolean,
-  last: boolean,
+import DefaultCell from '../../../DefaultCell'
+import type { DefaultCellProps } from '../../../DefaultCell'
+
+type Props = DefaultCellProps & {
   onSelect: (string) => void,
   pending: boolean,
   placeholder: string,
-  property: string,
-  width: number,
 }
 
 const ENTER = 13
@@ -45,26 +41,15 @@ class InputCell extends React.Component<Props> {
 
   render() {
     const {
-      align,
       children,
       onSelect,
       pending,
-      width,
       placeholder,
-      first,
-      last,
-      data,
+      ...props
     } = this.props
 
     return (
-      <td
-        className={cx({
-          'align-right': align === 'right',
-          first,
-          last
-        })}
-        width={width}
-        >
+      <DefaultCell {...props}>
         {this.props.data.editing
           ? <input
               autoFocus
@@ -79,7 +64,7 @@ class InputCell extends React.Component<Props> {
               />
           : this.props.data[this.props.property]
         }
-      </td>
+      </DefaultCell>
     )
   }
 }

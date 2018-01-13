@@ -1,7 +1,7 @@
 
 export Table from './Table'
 export Column from './Column'
-export TextCell from './TextCell'
+export DefaultCell from './DefaultCell'
 export HeaderCell from './HeaderCell'
 export connect from './Table/connect'
 

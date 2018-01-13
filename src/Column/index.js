@@ -3,7 +3,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 
 import HeaderCell from '../HeaderCell'
-import TextCell from '../TextCell'
+import DefaultCell from '../DefaultCell'
 
 export type Fixed = 'left' | 'right'
 export type Order = 'asc' | 'desc' | 'inital'
@@ -45,7 +45,7 @@ const Column = observer((props: Props) => null)
 
 Column.defaultProps = {
   header: <HeaderCell/>,
-  cell: <TextCell/>,
+  cell: <DefaultCell/>,
   width: 100,
 }
 

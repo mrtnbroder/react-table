@@ -3,25 +3,24 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
-type Props = {
-  align: string,
-  children: React.ChildrenArray<*>,
+export type HeaderCellProps = {
+  align?: string,
+  children?: React.Node,
+  property?: string,
+  width: number,
 }
 
 const HeaderCell = ({
   align,
-  width,
-  first,
-  last,
   children,
-}: Props) => (
+  property,
+  ...props
+}: HeaderCellProps) => (
   <th
     className={cx({
       'align-right': align === 'right',
-      first,
-      last
     })}
-    width={width}
+    {...props}
     >
     {children}
   </th>

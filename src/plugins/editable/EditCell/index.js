@@ -3,16 +3,13 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
-type Props = {
-  align: string,
-  children: React.ChildrenArray<*>,
-  data: { id: string, [string]: any },
-  first: boolean,
-  last: boolean,
+import DefaultCell from '../../../DefaultCell'
+import type { DefaultCellProps } from '../../../DefaultCell'
+
+type Props = DefaultCellProps & {
+  data: { id: string, editing: boolean, [string]: any },
   onToggleEdit: (string) => void,
   pending: boolean,
-  property: string,
-  width: number,
 }
 
 class EditCell extends React.Component<Props> {
@@ -25,29 +22,19 @@ class EditCell extends React.Component<Props> {
 
   render() {
     const {
-      align,
       children,
       onToggleEdit,
       pending,
-      width,
-      first,
-      last,
       data,
+      ...props
     } = this.props
 
     return (
-      <td
-        className={cx({
-          'align-right': align === 'right',
-          first,
-          last
-        })}
-        width={width}
-        >
+      <DefaultCell {...props}>
         <button onClick={this.onToggleEdit}>
           {this.props.data.editing ? 'Save' : 'Edit'}
         </button>
-      </td>
+      </DefaultCell>
     )
   }
 }

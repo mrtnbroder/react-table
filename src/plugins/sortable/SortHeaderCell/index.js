@@ -3,6 +3,9 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
+import HeaderCell from '../../../HeaderCell'
+import type { HeaderCellProps } from '../../../HeaderCell'
+
 /**
  *  SortHeaderCell
  *
@@ -35,14 +38,7 @@ import cx from 'classnames'
  *  })
  */
 
-type Props = {
-  align: string,
-  property: string,
-  children: React.ChildrenArray<*>,
-  data: { [string]: any },
-  width: number,
-  first: boolean,
-  last: boolean,
+type Props = HeaderCellProps & {
   onSortChange: (string) => void,
   order: {
     order?: 'asc' | 'desc',
@@ -61,31 +57,26 @@ class SortHeaderCell extends React.Component<Props> {
 
   render() {
     const {
-      align,
       order,
-      width,
-      first,
-      last,
       property,
+      onSortChange,
       children,
+      ...props,
     } = this.props
     const isActive = !!(order.columnKey === property && order.order)
 
     return (
-      <th
-        width={width}
+      <HeaderCell
         onClick={this.onSortChange}
         className={cx({
           'sort-header-cell': true,
           'sort-header-cell--active': isActive,
-          'align-right': align === 'right',
-          first,
-          last
         })}
+        {...props}
         >
         {isActive ? order.order === 'desc' ? '↓' : '↑' : ''}
         {children}
-      </th>
+      </HeaderCell>
     )
   }
 }

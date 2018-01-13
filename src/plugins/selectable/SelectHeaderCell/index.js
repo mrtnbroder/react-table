@@ -3,6 +3,9 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
+import HeaderCell from '../../../HeaderCell'
+import type { HeaderCellProps } from '../../../HeaderCell'
+
 /**
  *  SelectHeaderCell
  *
@@ -31,15 +34,11 @@ import cx from 'classnames'
  *  })
  */
 
-type Props = {
-  align: string,
+type Props = HeaderCellProps & {
   checked: boolean,
-  children: React.ChildrenArray<*>,
-  first: boolean,
-  last: boolean,
   onSelectAll: () => void,
+  someSelected: boolean,
   pending: boolean,
-  width: number,
 }
 
 class SelectHeaderCell extends React.Component<Props> {
@@ -48,9 +47,13 @@ class SelectHeaderCell extends React.Component<Props> {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.someSelected && !nextProps.checked) {
-      this.node.indeterminate = true
+      if (this.node) {
+        this.node.indeterminate = true
+      }
     } else if (nextProps.checked || !nextProps.someSelected) {
-      this.node.indeterminate = false
+      if (this.node) {
+        this.node.indeterminate = false
+      }
     }
   }
 
@@ -65,25 +68,16 @@ class SelectHeaderCell extends React.Component<Props> {
 
   render() {
     const {
-      align,
-      width,
-      first,
-      last,
       pending,
       children,
       checked,
+      someSelected,
       onSelectAll,
+      ...props,
     } = this.props
 
     return (
-      <th
-        width={width}
-        className={cx({
-          'align-right': align === 'right',
-          first,
-          last
-        })}
-        >
+      <HeaderCell {...props}>
         <input
           checked={checked}
           onChange={this.onSelectAll}
@@ -91,7 +85,7 @@ class SelectHeaderCell extends React.Component<Props> {
           disabled={pending}
           type='checkbox'
           />
-      </th>
+      </HeaderCell>
     )
   }
 }

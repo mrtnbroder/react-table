@@ -4,8 +4,6 @@ import * as React from 'react'
 import cx from 'classnames'
 
 import Row from '../Row'
-import TextCell from '../TextCell'
-import SortHeaderCell from '../plugins/sortable/SortHeaderCell'
 
 import mkViewModel from './viewModel'
 import connect from './connect'
@@ -160,12 +158,16 @@ tr {
   padding-right: 56px;
 }
 
-.first {
-  padding-left: 24px;
+.tables .fixed-table:last-child tr td:last-child,
+.tables .fixed-table:last-child tr th:last-child {
+  padding-left: 0;
+  padding-right: 24px;
 }
 
-.last {
-  padding-right: 24px;
+.tables .fixed-table:first-child tr td:first-child,
+.tables .fixed-table:first-child tr th:first-child {
+  padding-right: 0;
+  padding-left: 24px;
 }
 
 .table-footer {
@@ -192,9 +194,6 @@ const FixedTable = observer(({ children, side, rows, vm }) => (
         <tr>
           {React.Children.map(children, (column) =>
             React.cloneElement(column.props.header, {
-              map: vm.map,
-              first: column.props.first,
-              last: column.props.last,
               width: column.props.width,
               property: column.props.property,
               align: column.props.align,
@@ -210,15 +209,13 @@ const FixedTable = observer(({ children, side, rows, vm }) => (
             <Row
               data={data}
               key={data.id}
-              map={vm.map}
+              state={vm.map.get(data.id)}
               onMouseEnter={vm.handleRowMouseEnter}
               onMouseLeave={vm.handleRowMouseLeave}
               >
               {React.Children.map(children, (column) =>
                 React.cloneElement(column.props.cell, {
-                  map: vm.map,
-                  first: column.props.first,
-                  last: column.props.last,
+                  state: vm.map.get(data.id),
                   width: column.props.width,
                   property: column.props.property,
                   align: column.props.align,

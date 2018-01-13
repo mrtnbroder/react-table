@@ -3,37 +3,33 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
-type Props = {
-  align: string,
-  children: React.ChildrenArray<*>,
+export type DefaultCellProps = {
+  align?: string,
+  children?: React.Node,
+  className?: string,
   data: { [string]: any },
-  first: boolean,
-  last: boolean,
   property: string,
   width: number,
 }
 
-const TextCell = ({
+const DefaultCell = ({
   align,
-  property,
-  data,
-  first,
-  last,
-  width,
   children,
-}: Props) => (
+  className,
+  data,
+  property,
+  ...props
+}: DefaultCellProps) => (
   <td
     className={cx({
       'align-right': align === 'right',
-      first,
-      last
-    })}
-    width={width}
+    }, className)}
+    {...props}
     >
     {children || data[property]}
   </td>
 )
 
-TextCell.displayName = 'TextCell'
+DefaultCell.displayName = 'DefaultCell'
 
-export default observer(TextCell)
+export default observer(DefaultCell)
