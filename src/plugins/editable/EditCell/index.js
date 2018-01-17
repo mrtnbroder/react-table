@@ -7,23 +7,25 @@ import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
 type Props = DefaultCellProps & {
-  data: { id: string, editing: boolean, [string]: any },
-  onToggleEdit: (string) => void,
-  pending: boolean,
+  data: {
+    id: string,
+    editing: boolean,
+    handleToggleEditing: (string) => void,
+    [string]: any,
+  },
 }
 
 class EditCell extends React.Component<Props> {
 
-  onToggleEdit = (e) => {
+  handleToggleEditing = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    this.props.onToggleEdit(this.props.data.id)
+    this.props.data.handleToggleEditing(this.props.data.id)
   }
 
   render() {
     const {
       children,
-      onToggleEdit,
       pending,
       data,
       ...props
@@ -31,7 +33,7 @@ class EditCell extends React.Component<Props> {
 
     return (
       <DefaultCell {...props}>
-        <button onClick={this.onToggleEdit}>
+        <button onClick={this.handleToggleEditing}>
           {this.props.data.editing ? 'Save' : 'Edit'}
         </button>
       </DefaultCell>

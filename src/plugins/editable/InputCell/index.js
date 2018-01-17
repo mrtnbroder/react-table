@@ -7,9 +7,13 @@ import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
 type Props = DefaultCellProps & {
-  onSelect: (string) => void,
-  pending: boolean,
   placeholder: string,
+  data: {
+    id: string,
+    editing: boolean,
+    handleChange: (string, string) => void,
+    [string]: any,
+  },
 }
 
 const ENTER = 13
@@ -18,7 +22,7 @@ const ESC = 27
 class InputCell extends React.Component<Props> {
 
   handleChange = (e) => {
-    this.props.data.onChange(this.props.property, e.currentTarget.value)
+    this.props.data.handleChange(this.props.property, e.currentTarget.value)
   }
 
   handleKeyDown = (e) => {
@@ -42,7 +46,6 @@ class InputCell extends React.Component<Props> {
   render() {
     const {
       children,
-      onSelect,
       pending,
       placeholder,
       ...props

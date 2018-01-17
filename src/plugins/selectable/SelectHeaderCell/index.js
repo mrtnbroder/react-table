@@ -38,7 +38,6 @@ type Props = HeaderCellProps & {
   checked: boolean,
   onSelectAll: () => void,
   someSelected: boolean,
-  pending: boolean,
 }
 
 class SelectHeaderCell extends React.Component<Props> {

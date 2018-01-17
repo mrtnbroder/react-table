@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import * as React from 'react'
 import cx from 'classnames'
 
+import Column from '../Column'
 import Row from '../Row'
 
 import mkViewModel from './viewModel'
@@ -11,14 +12,14 @@ import connect from './connect'
 import type { ViewModel } from './viewModel'
 
 type Props = {
-  rows: Array<{ [string]: any }>,
-  vm: ViewModel,
-  children: React.ChildrenArray<*>,
+  children: React.ChildrenArray<React.Element<typeof Column>>,
   headerCellHeight: number,
   pending: boolean,
   rowCount: number,
-  totalCount: number,
   rowHeight: number,
+  rows: Array<{ [string]: any }>,
+  totalRows: number,
+  vm: ViewModel,
 }
 
 const getStyles = ({
@@ -53,12 +54,13 @@ const getStyles = ({
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0.0, 0.0, 0.2, 1);
-  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15)
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15);
+  will-change: box-shadow; /* TODO: set this dynamically */
 }
 
 .fixed-table-left--box-shadow {
   transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 1, 1);
-  box-shadow: 4px 0 6px 0 rgba(0, 0, 0, 0.15)
+  box-shadow: 4px 0 6px 0 rgba(0, 0, 0, 0.15);
 }
 
 .fixed-table-right {
@@ -68,7 +70,8 @@ const getStyles = ({
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0.0, 0.0, 0.2, 1);
-  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15)
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15);
+  will-change: box-shadow; /* TODO: set this dynamically */
 }
 
 .fixed-table-right--box-shadow {
@@ -92,7 +95,7 @@ const getStyles = ({
   padding: 0;
   table-layout: fixed;
   white-space: nowrap;
-
+  /* contain: content or layout, need to figure this out more. may want this on every table row; */
   font-family: 'Roboto', sans-serif;
 }
 
@@ -104,6 +107,11 @@ const getStyles = ({
 .table-header--center {
   width: ${columnsWidth}px;
   max-width: ${columnsWidth}px;
+}
+
+.table-inner--left,
+.table-inner--right {
+  will-change: scroll-position;
 }
 
 th, td {
@@ -187,7 +195,7 @@ tr {
 `
 })
 
-const FixedTable = observer(({ children, side, rows, vm }) => (
+const FixedTable = observer(({ children, side, rows }) => (
   <div className={`fixed-table fixed-table-${side}`}>
     <table className={`table table-header table-header--${side}`}>
       <thead>
@@ -209,17 +217,13 @@ const FixedTable = observer(({ children, side, rows, vm }) => (
             <Row
               data={data}
               key={data.id}
-              state={vm.map.get(data.id)}
-              onMouseEnter={vm.handleRowMouseEnter}
-              onMouseLeave={vm.handleRowMouseLeave}
               >
               {React.Children.map(children, (column) =>
                 React.cloneElement(column.props.cell, {
-                  state: vm.map.get(data.id),
-                  width: column.props.width,
-                  property: column.props.property,
                   align: column.props.align,
                   data,
+                  property: column.props.property,
+                  width: column.props.width,
                 })
               )}
             </Row>
@@ -240,7 +244,7 @@ const Table = ({
   headerCellHeight,
   rowCount,
   rowHeight,
-  totalCount,
+  totalRows,
   rows,
   vm,
 }: Props) => {
@@ -259,28 +263,24 @@ const Table = ({
           <FixedTable
             side='left'
             rows={rows}
-            vm={vm}
             >
             {vm.columns.left}
           </FixedTable>
           <FixedTable
             rows={rows}
-            map={vm.map}
-            vm={vm}
             >
             {vm.columns.center}
           </FixedTable>
           <FixedTable
             side='right'
             rows={rows}
-            vm={vm}
             >
             {vm.columns.right}
           </FixedTable>
         </div>
       </div>
       <div className='table-footer'>
-        <span>Showing 1 - 10 of {totalCount}</span>
+        <span>Showing 1 - 10 of {totalRows}</span>
       </div>
     </React.Fragment>
   )

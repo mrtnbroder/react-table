@@ -6,6 +6,7 @@ import cx from 'classnames'
 export type HeaderCellProps = {
   align?: string,
   children?: React.Node,
+  pending?: boolean,
   property?: string,
   width: number,
 }

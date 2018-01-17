@@ -7,24 +7,26 @@ import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
 type Props = DefaultCellProps & {
-  data: { id: string, selected: boolean, [string]: any },
-  onSelect: (string) => void,
-  pending: boolean,
+  data: {
+    id: string,
+    selected: boolean,
+    handleSelect: () => void,
+    [string]: any,
+  },
 }
 
 class SelectCell extends React.Component<Props> {
 
   handleSelect = (e) => {
     e.stopPropagation()
-    this.props.onSelect(this.props.data.id)
+    this.props.data.handleSelect()
   }
 
   render() {
     const {
       children,
-      onSelect,
-      pending,
       data,
+      pending,
       ...props
     } = this.props
 

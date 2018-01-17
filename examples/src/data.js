@@ -1,23 +1,16 @@
 import * as mobx from 'mobx'
+import { mkDefaultRow, mkEditableRow, mkSelectableRow } from 'react-table'
 
-export const mkObservable = (data) => {
-  const vm = mobx.observable({
-    // SELECTABLE stuff
-    onRowClick: mobx.action(() => {
-      vm.selected = !vm.selected
-    }),
-    selected: false,
-    // EDITABLE stuff
-    editing: false,
-    onChange: mobx.action((property, value) => {
-      vm[property] = value
-    }),
-    // TEST STUFF
-    changeDessert: mobx.action(() => {
-      vm.dessert = Math.random().toString(36)
-    }),
+export const mkRow = (data) => {
+  const vm = mobx.observable()
+
+  mobx.extendObservable(vm, {
+    ...mkDefaultRow(vm),
+    ...mkEditableRow(vm),
+    ...mkSelectableRow(vm),
     ...data,
   })
+
   return vm
 }
 
@@ -920,5 +913,6 @@ export default [ { id: '11af39f8-e93f-4053-9173-1fd66653b14b',
     protein: 6.1,
     sodium: 406,
     calcium: '33%',
-    iron: '70%' } ]
-.map(mkObservable)
+    iron: '70%',
+  },
+].map(mkRow)

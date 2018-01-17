@@ -5,44 +5,49 @@ import cx from 'classnames'
 
 export type Props = {
   children: React.ChildrenArray<*>,
-  map: Map<*>,
-  data: { id: string, hover: boolean, [string]: any },
-  onMouseEnter: (string) => void,
-  onMouseLeave: (string) => void,
+  data: {
+    id: string,
+    hover: boolean,
+    editing: boolean,
+    handleRowClick: (string) => void,
+    handleRowMouseEnter: (string) => void,
+    handleRowMouseLeave: (string) => void,
+    [string]: any,
+  },
 }
 
 class Row extends React.Component<Props> {
 
-  onMouseEnter = () => {
-    this.props.onMouseEnter(this.props.data.id)
+  handleMouseEnter = () => {
+    this.props.data.handleRowMouseEnter()
   }
 
-  onMouseLeave = () => {
-    this.props.onMouseLeave(this.props.data.id)
+  handleMouseLeave = () => {
+    this.props.data.handleRowMouseLeave()
   }
 
   // SELECTABLE AND EDITABLE stuff
-  onClick = (e) => {
+  handleClick = (e) => {
     if (!this.props.data.editing) {
       e.stopPropagation()
       e.preventDefault()
-      this.props.data.onRowClick()
+      this.props.data.handleRowClick()
     }
   }
 
   render() {
     return (
       <tr
-        onClick={this.onClick}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
+        onClick={this.handleClick}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
         className={cx({
           // TODO: this row shouldn't make assumptions about it's data, it should
           // be handled inside a SelectRow that makes assumptions about the data
           // being passed in. So create a new Row that can make this assumption.
           // and use that as the Row. The Row Element can be passed in from the Table.
-          'row--selected': this.props.state.selected,
-          'row--hover': this.props.state.hover,
+          'row--selected': this.props.data.selected,
+          'row--hover': this.props.data.hover,
         })}
         >
         {this.props.children}
@@ -52,9 +57,5 @@ class Row extends React.Component<Props> {
 }
 
 Row.displayName = 'Row'
-
-Row.defaultProps = {
-  state: {},
-}
 
 export default observer(Row)

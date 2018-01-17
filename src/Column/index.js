@@ -9,7 +9,7 @@ export type Fixed = 'left' | 'right'
 export type Order = 'asc' | 'desc' | 'inital'
 export type Alignment = 'left' | 'center' | 'right'
 
-export type Props = {
+export type ColumnProps = {
   property?: string,
   /**
    *  Makes the column take a 'fixed' position to either the left
@@ -41,7 +41,7 @@ export type Props = {
   // row: { [string]: any },
 }
 
-const Column = observer((props: Props) => null)
+const Column = observer((props: ColumnProps) => null)
 
 Column.defaultProps = {
   header: <HeaderCell/>,

@@ -8,6 +8,7 @@ export type DefaultCellProps = {
   children?: React.Node,
   className?: string,
   data: { [string]: any },
+  pending?: boolean,
   property: string,
   width: number,
 }
@@ -17,6 +18,7 @@ const DefaultCell = ({
   children,
   className,
   data,
+  pending,
   property,
   ...props
 }: DefaultCellProps) => (

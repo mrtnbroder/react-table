@@ -1,13 +1,6 @@
-
 import * as React from 'react'
 import * as mobx from 'mobx'
 // import * as R from 'ramda'
-
-export type ViewModel = {
-  columnsLeft: Array<*>,
-  columnsRight: Array<*>,
-  columns: Array<*>,
-}
 
 const mkViewModel = (
   params,
@@ -16,23 +9,6 @@ const mkViewModel = (
 ) => {
   const elems = {}
   const vm = mobx.observable({
-    map: mobx.observable.map(),
-    handleRowMouseEnter: mobx.action((id) => {
-      const row = vm.map.get(id)
-      if (row) {
-        vm.map.set(id, { ...row, hover: true })
-      } else {
-        vm.map.set(id, { hover: true })
-      }
-    }),
-    handleRowMouseLeave: mobx.action((id) => {
-      const row = vm.map.get(id)
-      if (row) {
-        vm.map.set(id, { ...row, hover: false })
-      } else {
-        vm.map.set(id, { hover: false })
-      }
-    }),
     columnsWidth: mobx.computed(() => vm.columns.center.reduce((acc, column) => acc + column.props.width, 0)),
     fixedColumnsCount: mobx.computed(() => vm.columns.left.length + vm.columns.right.length),
     columnsCount: mobx.computed(() => vm.columns.center.length + vm.fixedColumnsCount),

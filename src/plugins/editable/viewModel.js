@@ -2,15 +2,16 @@
 import * as mobx from 'mobx'
 import * as R from 'ramda'
 
-const mkViewModel = () => {
-  const vm = mobx.observable({
-    map: mobx.observer.map(),
-    // EDITABLE
-    handleToggleEdit: mobx.action((id) => {
-      vm.map.set(id, true)
+export const mkEditableRow = (rootStore) => {
+  const vm = {
+    editing: false,
+    handleChange: mobx.action((property, value) => {
+      rootStore[property] = value
     }),
-  })
+    handleToggleEditing: mobx.action(() => {
+      rootStore.editing = !rootStore.editing
+    }),
+  }
+
   return vm
 }
-
-export default mkViewModel
