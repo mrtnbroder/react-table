@@ -57,6 +57,11 @@
     "ramda": "^0.25.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-native": "0.52.0",
+    "react-tiny-virtual-list": "2.1.4",
+    "react-virtualized": "9.17.3",
+    "recyclerlistview": "1.2.6",
+    "recyclerlistview_nghialt": "1.2.8",
     "styled-components": "^2.4.0"
   },
   "devDependencies": {

@@ -66,7 +66,6 @@ const getStyles = ({
 .fixed-table-right {
   flex: 1 0 auto;
   height: ${rowCount * rowHeight + headerCellHeight}px;
-  overflow: hidden;
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0.0, 0.0, 0.2, 1);
@@ -103,6 +102,10 @@ const getStyles = ({
   position: relative;
 }
 
+.table-inner {
+  transform: translateZ(0);
+}
+
 .table-inner--center,
 .table-header--center {
   width: ${columnsWidth}px;
@@ -114,16 +117,15 @@ const getStyles = ({
   will-change: scroll-position;
 }
 
-th, td {
+th, .cell {
   border: 0;
   margin: 0;
   padding: 0;
   min-width: 48px;
 }
 
-td {
+.cell {
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
   height: ${rowHeight}px;
   color: rgba(0, 0, 0, 0.87);
@@ -147,7 +149,7 @@ th {
   color: rgba(0, 0, 0, 0.87);
 }
 
-tr {
+.row {
   background-color: #fff;
   box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.12);
   transition: background-color 150ms cubic-bezier(0.4, 0.0, 0.6, 1);;
@@ -179,7 +181,6 @@ tr {
 }
 
 .table-footer {
-  overflow: hidden;
   height: ${headerCellHeight}px;
   padding: 0 24px;
   color: rgba(0, 0, 0, 0.87);
@@ -216,7 +217,7 @@ const FixedTable = observer(({ children, side, rows }) => (
           {rows.map((data, idx) =>
             <Row
               data={data}
-              key={data.id}
+              key={data.index}
               >
               {React.Children.map(children, (column) =>
                 React.cloneElement(column.props.cell, {
@@ -259,25 +260,25 @@ const Table = ({
         fixedColumnsCount: vm.fixedColumnsCount,
       })}/>
       <div className='tables-container'>
-        <div className='tables'>
-          <FixedTable
-            side='left'
-            rows={rows}
-            >
-            {vm.columns.left}
-          </FixedTable>
-          <FixedTable
-            rows={rows}
-            >
-            {vm.columns.center}
-          </FixedTable>
-          <FixedTable
-            side='right'
-            rows={rows}
-            >
-            {vm.columns.right}
-          </FixedTable>
-        </div>
+          <div className='tables'>
+            <FixedTable
+              side='left'
+              rows={rows}
+              >
+              {vm.columns.left}
+            </FixedTable>
+            <FixedTable
+              rows={rows}
+              >
+              {vm.columns.center}
+            </FixedTable>
+            <FixedTable
+              side='right'
+              rows={rows}
+              >
+              {vm.columns.right}
+            </FixedTable>
+          </div>
       </div>
       <div className='table-footer'>
         <span>Showing 1 - 10 of {totalRows}</span>

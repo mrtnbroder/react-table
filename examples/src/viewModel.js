@@ -35,6 +35,14 @@ const mkViewModel = (
     changeDessert: mobx.action(() => {
       vm.rows[3].dessert = Math.random().toString(36)
     }),
+    switchRow: mobx.action(() => {
+      const newRow = mkData({ editing: true })
+      const oldRow = vm.rows[Math.floor(Math.random() * (vm.rows.length - 1)) + 1]
+
+      Object.keys(newRow).forEach((key) => {
+        oldRow[key] = newRow[key]
+      })
+    }),
     addRow: () => {
       vm.rows.unshift(mkRow(mkData({ editing: true, dessert: '' })))
     },

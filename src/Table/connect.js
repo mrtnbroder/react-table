@@ -4,6 +4,9 @@ import { observer } from 'mobx-react'
 
 const connect = (mkViewModel, component) =>
   class Connect extends React.Component {
+    static defaultProps = mkViewModel.defaultProps
+    static contextTypes = mkViewModel.contextTypes
+
     constructor(props, ctx) {
       const params = {}
 
@@ -18,11 +21,15 @@ const connect = (mkViewModel, component) =>
         this.observableProps,
         nextProps
       )
+
+      if (this.viewModel.componentWillReceiveProps) {
+        this.viewModel.componentWillReceiveProps.bind(this)()
+      }
     }
 
     componentDidMount() {
       if (this.viewModel.componentDidMount) {
-        this.viewModel.componentDidMount()
+        this.viewModel.componentDidMount.bind(this)()
       }
     }
 

@@ -38,32 +38,34 @@ import type { HeaderCellProps } from '../../../HeaderCell'
  *  })
  */
 
-type Props = HeaderCellProps & {
-  onSortChange: (string) => void,
-  order: {
-    order?: 'asc' | 'desc',
-    columnKey: string,
+type Props = {|
+  ...HeaderCellProps,
+  vm: {
+    handleSortChange: (string) => void,
+    sortOrder: {
+      order?: 'asc' | 'desc',
+      columnKey: string,
+    },
   },
   property: string,
-}
+|}
 
 class SortHeaderCell extends React.Component<Props> {
 
   onSortChange = (e) => {
     e.preventDefault()
 
-    this.props.onSortChange(this.props.property)
+    this.props.vm.handleSortChange(this.props.property)
   }
 
   render() {
     const {
-      order,
+      vm,
       property,
-      onSortChange,
       children,
       ...props,
     } = this.props
-    const isActive = !!(order.columnKey === property && order.order)
+    const isActive = !!(vm.sortOrder.columnKey === property && vm.sortOrder.order)
 
     return (
       <HeaderCell
@@ -74,7 +76,7 @@ class SortHeaderCell extends React.Component<Props> {
         })}
         {...props}
         >
-        {isActive ? order.order === 'desc' ? '↓' : '↑' : ''}
+        {isActive ? vm.sortOrder.order === 'desc' ? '↓' : '↑' : ''}
         {children}
       </HeaderCell>
     )

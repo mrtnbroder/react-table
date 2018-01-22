@@ -4,6 +4,7 @@ export Column from './Column'
 export DefaultCell from './DefaultCell'
 export HeaderCell from './HeaderCell'
 export connect from './Table/connect'
+export RecyclerView from './RecyclerView'
 
 // CORE
 export * from './viewModel'

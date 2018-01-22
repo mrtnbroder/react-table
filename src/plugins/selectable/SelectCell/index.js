@@ -6,14 +6,14 @@ import cx from 'classnames'
 import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
-type Props = DefaultCellProps & {
+type Props =  {|
+  ...DefaultCellProps,
   data: {
+    handleSelect: () => void,
     id: string,
     selected: boolean,
-    handleSelect: () => void,
-    [string]: any,
   },
-}
+|}
 
 class SelectCell extends React.Component<Props> {
 
@@ -24,9 +24,9 @@ class SelectCell extends React.Component<Props> {
 
   render() {
     const {
+      vm,
       children,
       data,
-      pending,
       ...props
     } = this.props
 
@@ -34,7 +34,7 @@ class SelectCell extends React.Component<Props> {
       <DefaultCell {...props}>
         <input
           checked={data.selected}
-          disabled={pending}
+          disabled={vm.pending}
           onClick={this.handleSelect}
           type='checkbox'
           />

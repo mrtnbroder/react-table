@@ -1,6 +1,7 @@
 
 body {
   background-color: #FAFAFA;
+  padding: 0;
 }
 
 .Card {
@@ -10,4 +11,23 @@ body {
 
 .Card--center {
   margin: 0 auto;
+}
+
+.ul {
+  list-style-type: none;
+}
+
+.ul li {
+  line-height: 48px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.container {
+  height: 336px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
 }

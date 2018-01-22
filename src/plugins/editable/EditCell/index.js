@@ -6,14 +6,14 @@ import cx from 'classnames'
 import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
-type Props = DefaultCellProps & {
+type Props = {|
+  ...DefaultCellProps,
   data: {
-    id: string,
     editing: boolean,
     handleToggleEditing: (string) => void,
-    [string]: any,
+    id: string,
   },
-}
+|}
 
 class EditCell extends React.Component<Props> {
 
@@ -26,7 +26,7 @@ class EditCell extends React.Component<Props> {
   render() {
     const {
       children,
-      pending,
+      vm,
       data,
       ...props
     } = this.props

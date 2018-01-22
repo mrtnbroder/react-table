@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import * as mobx from 'mobx'
+// import * as mobx from 'mobx'
 
 import './App.css'
 import mkViewModel from './viewModel'
@@ -22,15 +22,15 @@ import {
   Column,
   Table,
   connect,
+  // RecyclerView,
 } from 'react-table'
-
-global.mobx = mobx
 
 const App = ({ vm }) => (
   <React.Fragment>
     <button onClick={vm.changeDessert}>Change Row 3 Dessert</button>
     <button onClick={vm.toggleFixed}>Toggle Fixed Column</button>
     <button onClick={vm.addRow}>Add Row</button>
+    <button onClick={vm.switchRow}>Exchang Data of Random Row</button>
     <Card className='Card Card--center'>
       <header>
         <h2>Nutrition</h2>
@@ -45,32 +45,23 @@ const App = ({ vm }) => (
           property='selected'
           width={72}
           header={
-            <SelectHeaderCell
-              someSelected={vm.someSelected}
-              checked={vm.allSelected}
-              onSelectAll={vm.handleSelectAll}
-              pending={vm.pending}
-              />
+            <SelectHeaderCell vm={vm}/>
           }
           cell={
-            <SelectCell
-              pending={vm.pending}
-              />
+            <SelectCell vm={vm}/>
           }
           />
         <Column
           property='dessert'
           width={203}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Dessert (100g serving)
             </SortHeaderCell>
           }
           cell={
             <InputCell
+              vm={vm}
               placeholder='Enter a dessert'
               />
           }
@@ -80,10 +71,7 @@ const App = ({ vm }) => (
           property='calories'
           // width={108}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Calories
             </SortHeaderCell>
           }
@@ -93,10 +81,7 @@ const App = ({ vm }) => (
           property='fat'
           // width={92}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Fat (g)
             </SortHeaderCell>
           }
@@ -106,10 +91,7 @@ const App = ({ vm }) => (
           property='carbs'
           // width={106}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Carbs (g)
             </SortHeaderCell>
           }
@@ -119,10 +101,7 @@ const App = ({ vm }) => (
           property='protein'
           // width={113}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Protein (g)
             </SortHeaderCell>
           }
@@ -132,10 +111,7 @@ const App = ({ vm }) => (
           property='sodium'
           // width={126}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Sodium (mg)
             </SortHeaderCell>
           }
@@ -145,10 +121,7 @@ const App = ({ vm }) => (
           property='calcium'
           // width={121}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Calcium (%)
             </SortHeaderCell>
           }
@@ -158,10 +131,7 @@ const App = ({ vm }) => (
           property='iron'
           // width={98}
           header={
-            <SortHeaderCell
-              order={vm.sortOrder}
-              onSortChange={vm.handleSortChange}
-              >
+            <SortHeaderCell vm={vm}>
               Iron (%)
             </SortHeaderCell>
           }
@@ -170,19 +140,14 @@ const App = ({ vm }) => (
           fixed='right'
           // width={24}
           cell={
-            <DeleteCell
-              onDelete={vm.handleDelete}
-              pending={vm.pending}
-              />
+            <DeleteCell vm={vm}/>
           }
           />
         <Column
           fixed='right'
           // width={24}
           cell={
-            <EditCell
-              pending={vm.pending}
-              />
+            <EditCell vm={vm}/>
           }
           />
       </Table>

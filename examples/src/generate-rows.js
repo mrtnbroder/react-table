@@ -18,4 +18,4 @@ const mkEntry = (data) => ({
 
 module.exports = mkEntry
 
-// console.log(new Array(100).fill(0).map(mkEntry))
+// process.stdout.write(JSON.stringify(new Array(1000).fill(0).map(mkEntry).map((x, i) => ({ ...x, index: i })), null, 2))

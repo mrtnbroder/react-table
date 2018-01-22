@@ -36,12 +36,19 @@ class Row extends React.Component<Props> {
   }
 
   render() {
+    const {
+      children,
+      data,
+      ...props
+    } = this.props
+
     return (
       <tr
         onClick={this.handleClick}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         className={cx({
+          'row': true,
           // TODO: this row shouldn't make assumptions about it's data, it should
           // be handled inside a SelectRow that makes assumptions about the data
           // being passed in. So create a new Row that can make this assumption.
@@ -49,8 +56,9 @@ class Row extends React.Component<Props> {
           'row--selected': this.props.data.selected,
           'row--hover': this.props.data.hover,
         })}
+        {...props}
         >
-        {this.props.children}
+        {children}
       </tr>
     )
   }

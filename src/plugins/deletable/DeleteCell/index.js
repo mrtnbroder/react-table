@@ -5,22 +5,25 @@ import { observer } from 'mobx-react'
 import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
-type Props = DefaultCellProps & {
-  onDelete: (string) => void,
-}
+type Props = {|
+  ...DefaultCellProps,
+  vm: {
+    handleDelete: (string) => void,
+    pending: boolean,
+  }
+|}
 
 class DeleteCell extends React.Component<Props> {
 
   handleDelete = (e) => {
     e.preventDefault()
-    this.props.onDelete(this.props.data.id)
+    this.props.vm.handleDelete(this.props.data.id)
   }
 
   render() {
     const {
+      vm,
       children,
-      onDelete,
-      pending,
       data,
       ...props,
     } = this.props
@@ -28,7 +31,7 @@ class DeleteCell extends React.Component<Props> {
     return (
       <DefaultCell {...props}>
         <button
-          disabled={pending}
+          disabled={vm.pending}
           onClick={this.handleDelete}
           >
           🗑

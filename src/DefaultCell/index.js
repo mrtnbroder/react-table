@@ -3,15 +3,17 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
-export type DefaultCellProps = {
+export type DefaultCellProps = {|
   align?: string,
   children?: React.Node,
   className?: string,
   data: { [string]: any },
-  pending?: boolean,
   property: string,
   width: number,
-}
+  vm: {
+    pending: boolean,
+  },
+|}
 
 const DefaultCell = ({
   align,
@@ -24,6 +26,7 @@ const DefaultCell = ({
 }: DefaultCellProps) => (
   <td
     className={cx({
+      'cell': true,
       'align-right': align === 'right',
     }, className)}
     {...props}

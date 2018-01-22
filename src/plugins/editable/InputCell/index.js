@@ -6,15 +6,15 @@ import cx from 'classnames'
 import DefaultCell from '../../../DefaultCell'
 import type { DefaultCellProps } from '../../../DefaultCell'
 
-type Props = DefaultCellProps & {
-  placeholder: string,
+type Props = {|
+  ...DefaultCellProps,
   data: {
-    id: string,
     editing: boolean,
     handleChange: (string, string) => void,
-    [string]: any,
+    id: string,
   },
-}
+  placeholder: string,
+|}
 
 const ENTER = 13
 const ESC = 27
@@ -45,8 +45,8 @@ class InputCell extends React.Component<Props> {
 
   render() {
     const {
+      vm,
       children,
-      pending,
       placeholder,
       ...props
     } = this.props
@@ -59,7 +59,7 @@ class InputCell extends React.Component<Props> {
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
               placeholder={placeholder}
-              disabled={pending}
+              disabled={vm.pending}
               onChange={this.handleChange}
               onKeyDown={this.handleKeyDown}
               type='text'

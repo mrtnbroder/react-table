@@ -3,13 +3,13 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 
-export type HeaderCellProps = {
+export type HeaderCellProps = {|
   align?: string,
   children?: React.Node,
   pending?: boolean,
   property?: string,
   width: number,
-}
+|}
 
 const HeaderCell = ({
   align,

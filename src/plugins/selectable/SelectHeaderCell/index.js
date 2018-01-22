@@ -6,50 +6,27 @@ import cx from 'classnames'
 import HeaderCell from '../../../HeaderCell'
 import type { HeaderCellProps } from '../../../HeaderCell'
 
-/**
- *  SelectHeaderCell
- *
- *  Sorts columns by property or custom onSelectAll method
- *
- *  @example
- *  const vm = mobx.observable({
- *    onSelect: mobx.action((rowId) => {
- *      if (vm.sortOrder.columnKey === property) {
- *        if (vm.sortOrder.order === null) {
- *          vm.sortOrder.order = 'desc'
- *          vm.rows = R.sortBy(R.prop(property), vm.rows)
- *        } else if (vm.sortOrder.order === 'desc') {
- *          vm.sortOrder.order = 'asc'
- *          vm.rows = R.reverse(R.sortBy(R.prop(property), vm.rows))
- *        } else if (vm.sortOrder.order === 'asc') {
- *          vm.sortOrder.order = null
- *          vm.rows = rows
- *        }
- *      } else {
- *        vm.sortOrder.order = null
- *        vm.sortOrder.columnKey = property
- *        vm.onSelectAll(property)
- *      }
- *    }),
- *  })
- */
-
-type Props = HeaderCellProps & {
-  checked: boolean,
-  onSelectAll: () => void,
-  someSelected: boolean,
-}
+type Props = {|
+  ...HeaderCellProps,
+  vm: {
+    allSelected: boolean,
+    handleSelectAll: () => void,
+    pending: boolean,
+    someSelected: boolean,
+  },
+|}
 
 class SelectHeaderCell extends React.Component<Props> {
 
   node = null
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.someSelected && !nextProps.checked) {
+  componentDidUpdate() {
+    if (this.props.vm.someSelected && !this.props.vm.allSelected) {
       if (this.node) {
         this.node.indeterminate = true
       }
-    } else if (nextProps.checked || !nextProps.someSelected) {
+    }
+    else if (this.props.vm.allSelected || !this.props.vm.someSelected) {
       if (this.node) {
         this.node.indeterminate = false
       }
@@ -58,7 +35,7 @@ class SelectHeaderCell extends React.Component<Props> {
 
   onSelectAll = (e) => {
     e.stopPropagation()
-    this.props.onSelectAll()
+    this.props.vm.handleSelectAll()
   }
 
   setRef = (node) => {
@@ -67,21 +44,19 @@ class SelectHeaderCell extends React.Component<Props> {
 
   render() {
     const {
-      pending,
       children,
-      checked,
-      someSelected,
-      onSelectAll,
+      vm,
       ...props,
     } = this.props
 
     return (
       <HeaderCell {...props}>
         <input
-          checked={checked}
+          checked={vm.allSelected}
+          indeterminate={vm.someSelected.toString()}
           onChange={this.onSelectAll}
           ref={this.setRef}
-          disabled={pending}
+          disabled={vm.pending}
           type='checkbox'
           />
       </HeaderCell>
