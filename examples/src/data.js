@@ -12015,4 +12015,4 @@ export default [
     "iron": "36%",
     "index": 999
   }
-]//.map(mkRow)
+].slice(0, 100).map(mkRow)

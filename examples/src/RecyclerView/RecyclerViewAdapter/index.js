@@ -1,4 +1,6 @@
 // @flow
+import * as React from 'react'
+import { Dimension } from '../utils'
 
 /**
  *  RecyclerViewAdapter
@@ -21,7 +23,7 @@ export interface IRecyclerViewAdapter<Context, View> {
    *  Called by the RecyclerView when RecyclerViewLayoutManager is in need
    *  of a new view and RecyclerViewRecyler has no available view.
    */
-  onCreateView(viewType: number): View;
+  onCreateView(viewType: number): Dimension;
 
   /**
    * Called by RecyclerView to display the data at the specified position.
@@ -38,33 +40,63 @@ export interface IRecyclerViewAdapter<Context, View> {
 export class RecyclerViewAdapter implements IRecyclerViewAdapter<any, any> {
   _tag = 'RecyclerViewAdapter'
   _recylerView = null
-  onCreateView() {}
-  onBindView() {}
+  _items = []
+  getItemViewType() {}
+  getItemDimensions() {}
+  renderItem() {}
   getItemCount() { return 0 }
 }
 
 export class MyRecyclerViewAdapter extends RecyclerViewAdapter {
-  // @private
-  // @public
   _items = []
+  renderedItems = []
 
-  constructor(recylerView, items) {
+  constructor(context, recylerView, items) {
     super()
+    this._context = context
     this._recylerView = recylerView
     this._items = items
   }
 
-  onCreateView(viewType) {
-    return {}
-  }
-
-  onBindView(view, position) {
-    const item = this.items[position]
-    view.dessert = item.dessert
-    view.carbs = item.carbs
-  }
-
   getItemCount() {
     return this._items.getSize()
+  }
+
+  getAdapterPosition(position) {
+    return this._items.getData().find((x) => x.index === position)
+  }
+
+  getItems() {
+    return this._items.getData()
+  }
+
+  getItemFromPosition(position) {
+    return this._items.getDataForIndex(position)
+  }
+
+  getItemDimensions(item) {
+    return Dimension.of(100, 100)
+  }
+
+  getItemViewType(position) {
+    const item = this._items[position]
+
+    if (item) {
+      return 'TYPE_PREMIUM'
+    }
+
+    return 'TYPE_BASIC'
+  }
+
+  forceUpdate() {
+    this._context.forceUpdate()
+  }
+
+  renderItem = (viewType, data, style) => {
+    return (
+      <li key={data.index} style={style}>
+        {data.dessert}
+      </li>
+    )
   }
 }

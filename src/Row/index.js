@@ -47,11 +47,10 @@ class Row extends React.Component<Props> {
         onClick={this.handleClick}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        className={cx({
-          'row': true,
+        className={cx('row', {
           // TODO: this row shouldn't make assumptions about it's data, it should
-          // be handled inside a SelectRow that makes assumptions about the data
-          // being passed in. So create a new Row that can make this assumption.
+          // be handled inside a SelectRow that can make assumptions about the data
+          // being passed in. So create a new Row that can makes this assumption.
           // and use that as the Row. The Row Element can be passed in from the Table.
           'row--selected': this.props.data.selected,
           'row--hover': this.props.data.hover,

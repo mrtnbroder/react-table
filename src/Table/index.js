@@ -281,7 +281,7 @@ const Table = ({
           </div>
       </div>
       <div className='table-footer'>
-        <span>Showing 1 - 10 of {totalRows}</span>
+        <span>Showing {vm.rowPositionTop} - {vm.rowPositionBottom} of {totalRows}</span>
       </div>
     </React.Fragment>
   )

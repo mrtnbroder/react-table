@@ -110,6 +110,7 @@ export class LayoutState implements ILayoutState {
   remaining = 0
   viewport = Dimension.of(0, 0)
   scroller = Dimension.of(0, 0)
+  lastPosition = 0
 
   hasMore(state) {
     return this.currentPosition >= 0 && this.currentPosition < state.getItemCount()

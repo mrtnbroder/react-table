@@ -4,15 +4,9 @@ import ScrollerView from '../ScrollerView'
 
 class RecyclerListView extends React.PureComponent {
 
-  // _recycler = new RecyclerViewRecyler()
-
-  componentDidMount() {
-    // this.init()
-  }
-
   render() {
     const layoutState = this.props.layoutManager._state
-    console.log(layoutState);
+
     return (
       <ScrollerView
         recyclerView={this.props.recyclerView}
@@ -21,10 +15,11 @@ class RecyclerListView extends React.PureComponent {
         {React.cloneElement(
           this.props.children, {
             style: {
-              width: layoutState.scroller.width,
-              height: layoutState.scroller.height,
+              width: 400,
+              height: 100000,
             }
-          })}
+          }
+        )}
       </ScrollerView>
     )
   }

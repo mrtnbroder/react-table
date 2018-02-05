@@ -14,7 +14,7 @@ class ScrollerView extends React.PureComponent {
   }
 
   init = () => {
-    this.props.recyclerView.updateDimensions(this.getScrollerDimension())
+    this.props.recyclerView.setDimensions(this.getScrollerDimension())
   }
 
   onScroll = (e) => {
@@ -27,7 +27,7 @@ class ScrollerView extends React.PureComponent {
     this.dx = scrollLeft
     this.dy = scrollTop
 
-    this.props.recyclerView.scrollBy(dx, dy)
+    this.props.recyclerView.scrollBy(dx, dy, scrollLeft, scrollTop)
   }
 
   getScrollerDimension = () => {

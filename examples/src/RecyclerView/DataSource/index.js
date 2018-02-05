@@ -25,7 +25,7 @@ export class DataSource implements IDataSource<Array<*>> {
     return this._data[index]
   }
 
-  getAllData() {
+  getData() {
     return this._data
   }
 

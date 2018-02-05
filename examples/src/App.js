@@ -36,6 +36,8 @@ const App = ({ vm }) => (
         <h2>Nutrition</h2>
       </header>
       <Table
+        rowCount={7}
+        rowHeight={48}
         pending={vm.pending}
         rows={vm.rows}
         totalRows={vm.totalRows}

@@ -23,35 +23,11 @@ class App extends React.Component {
 
     this.dataSource = new DataSource(rows)
     this.recyclerView = new RecyclerView()
-    this.layoutManager = new LinearLayoutManager(
-      this.recyclerView,
-      'vertical',
-      this.getViewForPosition,
-      this.getDimensionForType,
-    )
-    this.adapter = new MyRecyclerViewAdapter(this.recyclerView, this.dataSource)
-
-    this.layoutManager.getViewForPosition = this.getViewForPosition
-    this.layoutManager.setDimensionForType = this.getDimensionForType
+    this.layoutManager = new LinearLayoutManager(this.recyclerView)
+    this.adapter = new MyRecyclerViewAdapter(this, this.recyclerView, this.dataSource)
 
     this.recyclerView.setAdapter(this.adapter)
     this.recyclerView.setLayoutManager(this.layoutManager)
-  }
-
-  getViewForPosition = (position) => {
-    return 'FULL'
-  }
-
-  getDimensionForType = (type, data) => {
-    return Dimension.of(100, 100)
-  }
-
-  renderRow = (type, data, style) => {
-    return (
-      <li style={style}>
-        {data.dessert}
-      </li>
-    )
   }
 
   render() {
@@ -63,7 +39,9 @@ class App extends React.Component {
         recyclerView={this.recyclerView}
         scroller={<div style={styles.scroller}></div>}
         >
-        <div></div>
+        <ul>
+          {this.layoutManager.layouts}
+        </ul>
       </RecyclerListView>
     )
   }

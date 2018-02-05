@@ -9,6 +9,8 @@ const mkViewModel = (
 ) => {
   const elems = {}
   const vm = mobx.observable({
+    rowPositionTop: 0,
+    rowPositionBottom: 0,
     columnsWidth: mobx.computed(() => vm.columns.center.reduce((acc, column) => acc + column.props.width, 0)),
     fixedColumnsCount: mobx.computed(() => vm.columns.left.length + vm.columns.right.length),
     columnsCount: mobx.computed(() => vm.columns.center.length + vm.fixedColumnsCount),
@@ -38,11 +40,16 @@ const mkViewModel = (
       elems.tableRight = document.querySelector('.table-inner--right')
       elems.tableRightContainer = document.querySelector('.fixed-table-right')
 
-      elems.scrollTop = null
-      elems.scrollLeft = null
+      elems.scrollTop = 0
+      elems.scrollLeft = 0
 
+      vm.updateViewCount()
       requestAnimationFrame(vm.loop)
     },
+    updateViewCount: mobx.action(() => {
+      vm.rowPositionTop = Math.round(Math.max(elems.scrollTop / props.rowHeight, 1))
+      vm.rowPositionBottom = Math.round((elems.scrollTop / props.rowHeight) + props.rowCount)
+    }),
     loop() {
       if (
         elems.scrollTop === elems.tableCenter.scrollTop &&
@@ -53,6 +60,7 @@ const mkViewModel = (
         elems.scrollTop = elems.tableCenter.scrollTop
         elems.scrollLeft = elems.tableCenterContainer.scrollLeft
         vm.write(vm.read())
+        vm.updateViewCount()
         requestAnimationFrame(vm.loop)
       }
     },

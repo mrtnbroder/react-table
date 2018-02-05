@@ -69,12 +69,13 @@ export class RecyclerView implements IRecyclerView {
     return this.layoutManager
   }
 
-  updateDimensions = (dimension) => {
-    this.layoutManager.updatDimensions(dimension, this.adapter)
+  setDimensions = (dimension) => {
+    this.layoutManager.setDimensions(dimension, this.adapter)
+    this.layoutManager.onLayoutChildren(this._recycler, this.adapter)
   }
 
-  scrollBy = (dx, dy) => {
-    this.layoutManager.scrollHorizontallyBy(dx, this._recycler, this._state)
-    this.layoutManager.scrollVerticallyBy(dy, this._recycler, this._state)
+  scrollBy = (dx, dy, scrollLeft, scrollTop) => {
+    this.layoutManager.scrollHorizontallyBy(dx, scrollLeft, this.adapter, this._recycler, this._state)
+    this.layoutManager.scrollVerticallyBy(dy, scrollTop, this.adapter, this._recycler, this._state)
   }
 }

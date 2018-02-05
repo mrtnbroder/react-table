@@ -156,16 +156,16 @@ export class RecyclerViewLayoutManager implements IRecyclerViewLayoutManager {
     return this.orientation
   }
 
-  scrollHorizontallyBy(dx, scrollTop, recycler, state) {
+  scrollHorizontallyBy(dx, scrollLeft, adapter, recycler, state) {
     if (this.canScrollHorizontally()) {
-      return this.scrollBy(dx, scrollTop, recycler, state)
+      return this.scrollBy(dx, scrollLeft, adapter, recycler, state)
     }
     return 0
   }
 
-  scrollVerticallyBy(dy, scrollLeft, recycler, state) {
+  scrollVerticallyBy(dy, scrollTop, adapter, recycler, state) {
     if (this.canScrollVertically()) {
-      return this.scrollBy(dy, scrollLeft, recycler, state)
+      return this.scrollBy(dy, scrollTop, adapter, recycler, state)
     }
     return 0
   }
@@ -181,11 +181,9 @@ export class LinearLayoutManager extends RecyclerViewLayoutManager {
   _recyclerView = null
   _state = new LayoutState()
 
-  constructor(recyclerView, orientation, getViewForPosition, getDimensionForType) {
+  constructor(recyclerView, orientation) {
     super()
 
-    this.getViewForPosition = getViewForPosition
-    this.getDimensionForType = getDimensionForType
     this._recyclerView = recyclerView
 
     if (orientation) {
@@ -193,44 +191,95 @@ export class LinearLayoutManager extends RecyclerViewLayoutManager {
     }
   }
 
-  scrollBy(delta, recycler, state) {
+  findViewByPosition(position) {
+    return this.layouts.findIndex((x) => +x.key === position)
+  }
+
+  scrollBy(delta, scrollTop, adapter, recycler, state) {
     // return early to prevent unnecessary work
     if (delta === 0) {
       return delta
     }
 
-    this._state.layoutDirection = delta > 0 ? LAYOUT_END : LAYOUT_START
+    this._state.scrollOffset = scrollTop
+    const maxPos = Math.min(this._state.currentPosition, adapter.getItemCount() - 1)
 
-    const absDelta = Math.abs(delta)
-    // const consumed = scrollingOffset + this.fill(recycler, this._state, state)
-    // const scrolled = absDelta > consumed ? this._state.layoutDirection * consumed : delta
+    if (scrollTop >= this._state.steps[maxPos] && maxPos !== this._state.steps.length) {
+      const nextPosition = this.findViewByPosition(this._state.currentPosition)
+      const item = adapter.getItemFromPosition(this._state.offset)
+      const viewType = adapter.getItemViewType(this._state.offset)
+      const { height } = adapter.getItemDimensions(item)
+      console.log('item.index: %d, position: %d', item.index, nextPosition);
+      this.layouts[nextPosition] = adapter.renderItem(viewType, item, { transform: `translateY(${this._state.offset * height}px)`})
+      this._state.lastPosition = this._state.currentPosition
+      this._state.currentPosition = Math.min(this._state.currentPosition + 1, adapter.getItemCount() - 1)
+      this._state.offset = Math.min(this._state.offset + 1, adapter.getItemCount() - 1)
+      adapter.forceUpdate()
+    }
+    // if (scrollTop <= this._state.steps[this._state.currentPosition] && !this.inProgress) {
+    //   this.inProgress = true
+    //   const nextPosition = this.findViewByPosition(this._state.currentPosition)
+    //   const item = adapter.getItemFromPosition(this._state.offset)
+    //   const viewType = adapter.getItemViewType(this._state.offset)
+    //   const { height } = adapter.getItemDimensions(item)
+    //   console.log('item.index: %d, position: %d', item.index, nextPosition);
+    //   this.layouts[nextPosition] = adapter.renderItem(viewType, item, { transform: `translateY(${this._state.offset * height}px)`})
+    //   this._state.lastPosition = this._state.currentPosition
+    //   this._state.currentPosition += 1
+    //   this._state.offset += 1
+    //   this.inProgress = false
+    //   adapter.forceUpdate()
+    // }
 
-    console.log(recycler, state)
-
-    return delta
+    // if (delta > 0) {
+    //   this.fill(this._state)
+    // } else {
+    //   this.fillTowardsStart(this._state)
+    // }
   }
 
   onLayoutChildren = (recycler, adapter) => {
-    // const itemCount = adapter.getItemCount()
+    let spaceToFill = this._state.available + this._state.extra
+    console.log('wat')
+    while (spaceToFill > 0) {
+      const position = this._state.offset
+      const item = adapter.getItemFromPosition(position)
+      const viewType = adapter.getItemViewType(position)
+      const { height } = adapter.getItemDimensions(item)
+      this.layouts.push(adapter.renderItem(viewType, item, { transform: `translateY(${position * height}px)`}))
+      spaceToFill -= height
+      this._state.offset++
+    }
+    // console.log(this._state);
+    // console.log(this.layouts);
+    adapter.forceUpdate()
   }
 
   fill = (recycler, layoutState, state) => {
     const view = layoutState.next(recycler)
     const start = layoutState.available
-    const remainingSpace = (layoutState.available + layoutState.extra) - layoutState.scrollingOffset
 
     return start - layoutState.available
   }
 
-  updatDimensions = (dimension, state) => {
-    const itemCount = state.getItemCount()
-    const totalHeight = new Array(itemCount).fill(1).reduce((acc) => {
-      const height = this.getDimensionForType().height
+  setDimensions = (dimension, adapter) => {
+    const itemCount = adapter.getItemCount()
+    const sumItemHeight = (acc, _next, index) => {
+      const item = adapter.getItemFromPosition(index)
+      const { height } = adapter.getItemDimensions(item)
       return acc + height
-    }, 0)
+    }
+    const totalHeight = new Array(itemCount).fill(0).reduce(sumItemHeight, 0)
+    this._state.steps = new Array(itemCount).fill(0).reduce((acc, _next, index) => {
+      const item = adapter.getItemFromPosition(index)
+      const { height } = adapter.getItemDimensions(item)
+      const lastHeight = acc[index - 1] || 0
+      return acc.concat([lastHeight + height])
+    }, [])
     this._state.scroller = Dimension.of(dimension.width, totalHeight)
     this._state.viewport = dimension
     this._state.available = dimension.height
     this._state.extra = dimension.height * 2
+    console.log(this._state);
   }
 }
